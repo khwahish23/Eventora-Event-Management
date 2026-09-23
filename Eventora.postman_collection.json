@@ -1,0 +1,247 @@
+{
+    "info": {
+        "_postman_id": "eventora-api-collection",
+        "name": "Eventora API",
+        "description": "Postman collection for Eventora Event Management System",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000"
+        },
+        {
+            "key": "token",
+            "value": ""
+        },
+        {
+            "key": "eventId",
+            "value": ""
+        },
+        {
+            "key": "bookingId",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "AUTH",
+            "item": [
+                {
+                    "name": "Register User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Khwahish\",\n    \"email\": \"khwahish@example.com\",\n    \"password\": \"12345678\",\n    \"role\": \"user\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Login User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"khwahish@example.com\",\n    \"password\": \"12345678\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verify OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"khwahish@example.com\",\n    \"otp\": \"123456\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/verify-otp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "verify-otp"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "EVENTS",
+            "item": [
+                {
+                    "name": "Get All Events",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Event Test",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/test",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "test"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "BOOKINGS",
+            "item": [
+                {
+                    "name": "Send Booking OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/bookings/send-otp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "bookings",
+                                "send-otp"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Book Event",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"eventId\": \"{{eventId}}\",\n    \"otp\": \"123456\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/bookings/book",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "bookings",
+                                "book"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Confirm Booking",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"paymentStatus\": \"paid\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/bookings/confirm/{{bookingId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "bookings",
+                                "confirm",
+                                "{{bookingId}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
