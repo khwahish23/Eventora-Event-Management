@@ -2,7 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 
-const { protect } = require("../middleware/auth");
+const {
+    protect
+} = require("../middleware/auth");
 
 const {
     sendBookingOTP,
@@ -13,90 +15,127 @@ const {
 const Booking = require("../models/Booking");
 
 
-// ==========================================
+// =====================================================
 // SEND BOOKING OTP
-// ==========================================
-router.post("/send-otp", protect, sendBookingOTP);
+// =====================================================
+
+router.post(
+    "/send-otp",
+    protect,
+    sendBookingOTP
+);
 
 
-// ==========================================
-// BOOK EVENT
-// ==========================================
-router.post("/book", protect, bookEvent);
+// =====================================================
+// CREATE BOOKING
+// =====================================================
+
+router.post(
+    "/book",
+    protect,
+    bookEvent
+);
 
 
-// ==========================================
+// =====================================================
 // CONFIRM BOOKING
-// ==========================================
-router.put("/confirm/:id", protect, confirmBooking);
+// =====================================================
+
+router.put(
+    "/confirm/:id",
+    protect,
+    confirmBooking
+);
 
 
-// ==========================================
-// GET MY BOOKINGS
-// ==========================================
-router.get("/my", protect, async (req, res) => {
-    try {
+// =====================================================
+// MY BOOKINGS
+// =====================================================
 
-        const bookings = await Booking.find({
-            userId: req.user._id
-        })
-            .populate("eventId")
-            .sort({ createdAt: -1 });
+router.get(
+    "/my",
+    protect,
+    async (req, res) => {
 
-        res.status(200).json({
-            bookings: bookings
-        });
+        try {
 
-    } catch (error) {
-
-        console.error("Get My Bookings Error:", error);
-
-        res.status(500).json({
-            error: error.message
-        });
-    }
-});
+            const bookings =
+                await Booking.find({
+                    userId: req.user._id
+                })
+                    .populate("eventId")
+                    .sort({
+                        createdAt: -1
+                    });
 
 
-// ==========================================
-// GET SINGLE BOOKING
-// ==========================================
-router.get("/:id", protect, async (req, res) => {
-    try {
+            res.json(bookings);
 
-        const booking = await Booking.findById(req.params.id)
-            .populate("eventId")
-            .populate("userId", "name email");
+        } catch (error) {
 
-        if (!booking) {
-            return res.status(404).json({
-                error: "Booking not found"
+            res.status(500).json({
+                error: error.message
             });
+
         }
 
-        // Only allow the booking owner to view it
-        if (
-            booking.userId._id.toString() !==
-            req.user._id.toString()
-        ) {
-            return res.status(403).json({
-                error: "You are not allowed to view this booking"
+    }
+);
+
+
+// =====================================================
+// SINGLE BOOKING
+// =====================================================
+
+router.get(
+    "/:id",
+    protect,
+    async (req, res) => {
+
+        try {
+
+            const booking =
+                await Booking.findById(
+                    req.params.id
+                )
+                    .populate("eventId");
+
+
+            if (!booking) {
+
+                return res.status(404).json({
+                    error:
+                        "Booking not found"
+                });
+
+            }
+
+
+            if (
+                booking.userId.toString() !==
+                req.user._id.toString()
+            ) {
+
+                return res.status(403).json({
+                    error:
+                        "Not allowed"
+                });
+
+            }
+
+
+            res.json(booking);
+
+        } catch (error) {
+
+            res.status(500).json({
+                error: error.message
             });
+
         }
 
-        res.status(200).json({
-            booking: booking
-        });
-
-    } catch (error) {
-
-        console.error("Get Booking Error:", error);
-
-        res.status(500).json({
-            error: error.message
-        });
     }
-});
+);
 
 
 module.exports = router;
